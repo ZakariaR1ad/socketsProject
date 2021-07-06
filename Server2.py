@@ -84,7 +84,7 @@ def mainloop():
                 with open(os.path.join(folderName,received.replace("\n","")), "rb") as f:
                     
                     while True:
-                        print("here")
+                        
                         bytes_read = f.read(BUFFER_SIZE)
                         if not bytes_read:
                             
@@ -92,7 +92,7 @@ def mainloop():
                         
                         client_socket.sendall(bytes_read)
                     f.close()
-                    print("done")
+                    
             except:
                 status = "Failed"
             Label4 = Label(root, text=status)
