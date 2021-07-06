@@ -2,6 +2,7 @@ import socket
 from tkinter import *
 from tkinter.ttk import *
 import os
+import threading
 from datetime import datetime
 
 def writeAll(folderName, fileName):
@@ -50,45 +51,53 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((SERVER_HOST, SERVER_PORT))
 s.listen()
 client_socket, address = s.accept()
-
+root.mainloop()
 
 
 received = client_socket.recv(BUFFER_SIZE).decode()
 
-Label1 = Label(root, text=str(datetime.now()))  
-Label3 = Label(root, text=str(received).replace("\n","")) 
-Label2 = Label(root, text=str(address[0])+":"+str(address[1]))
 
-Label1.grid(row = cpt, column = 1, sticky = W, padx = 2)
-Label2.grid(row = cpt, column = 2, sticky = W, padx = 2)
-Label3.grid(row = cpt, column = 3, sticky = W, padx = 2) 
+while(received != "Q"):
+    h = open("history.txt", "a")
+    h.write(str(datetime.now())+" : "+str(received).replace("\n","")+" "+str(address)+"\n")
+    h.close()
+    # print(received)
+    # Label1 = Label(root, text=str(datetime.now()))  
+    # Label3 = Label(root, text=str(received).replace("\n","")) 
+    # Label2 = Label(root, text=str(address[0])+":"+str(address[1]))
 
-h = open("history.txt", "a")
-h.write(str(datetime.now())+" : "+str(received).replace("\n","")+" "+str(address)+"\n")
+    # Label1.grid(row = cpt, column = 1, sticky = W, padx = 2)
+    # Label2.grid(row = cpt, column = 2, sticky = W, padx = 2)
+    # Label3.grid(row = cpt, column = 3, sticky = W, padx = 2) 
 
-status = "Succes"
-try:
-    with open(os.path.join(folderName,received.replace("\n","")), "rb") as f:
-        while True:
+    status = "Succes"
+    try:
+        with open(os.path.join(folderName,received.replace("\n","")), "rb") as f:
             
-            bytes_read = f.read(BUFFER_SIZE)
-            if not bytes_read:
+            while True:
+                print("here")
+                bytes_read = f.read(BUFFER_SIZE)
+                if not bytes_read:
+                    
+                    break
                 
-                break
-            
-            client_socket.sendall(bytes_read)
-except:
-    status = "Failed"
-Label4 = Label(root, text=status)
-Label4.grid(row = cpt, column = 4, sticky = W, padx = 2) 
+                client_socket.sendall(bytes_read)
+            f.close()
+            print("done")
+    except:
+        status = "Failed"
+    # Label4 = Label(root, text=status)
+    # Label4.grid(row = cpt, column = 4, sticky = W, padx = 2) 
 
 
-cpt+=1
+    # cpt+=1
+    # received = client_socket.recv(BUFFER_SIZE).decode()
+    
 client_socket.close()
 
 s.close()
 
 
-root.mainloop()
+
 
 
