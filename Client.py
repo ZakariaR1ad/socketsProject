@@ -1,16 +1,21 @@
 import socket
 from tkinter import *
 import os
-import tkinter
 
 
+#Definition des varibales globales
 
 filename = ""
 BUFFER_SIZE = 4096
 Host = "127.0.0.1"
 Port = 5000
+
+#connexion au serveur
 s  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((Host, Port))
+
+
+#Definition de la fonction de déconnexion (boutton quitter)
     
 def quit(root):
     global s
@@ -26,11 +31,17 @@ def quit(root):
 
 
 
+
+
+#une fonction pour la reconnexion au cas d'erreur
 def reConnect():
     global s
     s.close()
     s  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((Host, Port))
+
+
+#la fonction de selection des fichiers: avecl'envoie du choix et la réception du fichier
 def CurSelet(evt):
     global filename
     
@@ -62,7 +73,7 @@ if __name__ == "__main__":
     
     
 
-
+# definition de la fenêtre 
 
     root = Tk()
     root.title("Client")
@@ -76,7 +87,7 @@ if __name__ == "__main__":
     label.pack() 
 
 
-
+#Ajout des fichiers disponibles (dans files.txt) à l'interface
     fileList = []
     file = open("files.txt", "r")
     lines = file.readlines()
@@ -88,6 +99,8 @@ if __name__ == "__main__":
         listbox.insert(END, f)
     listbox.pack()
     listbox.bind('<Double-1>',CurSelet)
+
+#ajouter un boutton de déconnexion
     button = Button(root, text="Quit", command=lambda root=root:quit(root))
     button.pack()
 

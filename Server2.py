@@ -4,7 +4,7 @@ import socket
 from datetime import datetime
 import os
 
-
+#Définition des variables
 SERVER_HOST = "0.0.0.0"
 SERVER_PORT = 5000
 
@@ -12,6 +12,8 @@ BUFFER_SIZE = 4096
 folderName = "./files"
 fileName = "files.txt"
 
+
+#Ecriture des noms des fichiers (dispo dans le dossier files) dans le fichier files.txt
 def writeAll(folderName, fileName):
     FilesList = [f for f in os.listdir(folderName) if os.path.isfile(os.path.join(folderName, f))]
     with open(fileName, "w") as inp:
@@ -19,6 +21,8 @@ def writeAll(folderName, fileName):
             inp.write(f+"\n")
         inp.close()
 
+
+#L'application principale (Main thread)
 class MyApp():
    
    def __init__(self, mywin):
@@ -27,7 +31,7 @@ class MyApp():
         writeAll(folderName, fileName)
         
             
-
+#Définition de la fenêtre
 root = Tk()
 root.title("Server")
 sizex = 600
@@ -55,6 +59,8 @@ Label4.grid(row = 1, column = 4, sticky = W, padx = 2,pady=2)
 cpt = 2
 myapp = MyApp(root)
 
+
+#Le coté socket qui comprend :connexion, réception et envoie
 def mainloop():
     global cpt
     
@@ -84,7 +90,7 @@ def mainloop():
                 with open(os.path.join(folderName,received.replace("\n","")), "rb") as f:
                     
                     while True:
-                        print("here")
+                        
                         bytes_read = f.read(BUFFER_SIZE)
                         if not bytes_read:
                             
@@ -92,7 +98,7 @@ def mainloop():
                         
                         client_socket.sendall(bytes_read)
                     f.close()
-                    print("done")
+                    
             except:
                 status = "Failed"
             Label4 = Label(root, text=status)
